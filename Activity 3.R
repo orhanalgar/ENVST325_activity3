@@ -74,13 +74,58 @@ plot(NHem$date, NHem$temperature_anomaly,
      xlab= "Year",
      ylab="Temperature Anamoly (celsius)",
      yaxt="n")
-axis(2, seq(-1,1, by=0.1),seq(-1,0.5, by=0.1), las=2)
-
+axis(2, seq(-5,5, by=0.5),seq(-5,5, by=0.5), las=2)
 
 #GGPlot
-ggplot()
+ggplot(NHem, aes(x=date, y=temperature_anomaly))+
+  geom_line()+
+  labs(x="Year", y="Temperature Anamoly (celsius)")+
+  theme_classic()
 
+#Homework
+#Question 1: Mauritius CO2 Emissions
+Mau <- datCO2 %>%
+  filter(Entity == "Mauritius")
+Mau$SimpleCO2 <- Mau$CO2 / 1000000
+ggplot(Mau, aes(x=Year, y=SimpleCO2))+
+  geom_line()+
+  labs(title="Mauritius Historical Emissions", x="Year", y="Fossil Fuel Emissions (million tons)")+
+  theme_classic()
 
+#Question 2: 
+TotalCO2 <- datCO2 %>%
+  group_by(year = Year) %>%
+  summarize(total_sum = sum(CO2, na.rm = TRUE))
+TotalCO2$simpleCO2 <- TotalCO2$total_sum / 1000000000
+ggplot(TotalCO2, aes(x=year, y=simpleCO2))+
+  geom_line()+
+  labs(title="Global Historical Emissions", x="Year", y="Fossil Fuel Emissions (billion tons)")+
+  theme_minimal()
+
+World_TempAnomalies <- tempAnom %>%
+  filter(Entity == "World")
+ggplot(World_TempAnomalies, aes(x=date, y=temperature_anomaly))+
+  geom_line()+
+  labs(title="Global Historical Temperature Anamolies", x="Year", y="Temperature Anomaly (celsius)")+
+  theme_minimal()
+
+#Question 3:
+datRE <- read.csv("/cloud/project/activity03/modern-renewable-energy-consumption.csv")
+
+africa <- datRE %>%
+  filter(Entity == "Africa")
+ggplot(africa, aes(x=Year, y=Solar))+
+  geom_line()+
+  labs(title="Africa Historical Solar Energy Consumption", x="Year", y="Solar Energy Consmumption (tera-watt hours)")+
+  theme_minimal()
+ggplot(africa, aes(x = Year)) +
+  geom_line(aes(y = Solar, color = "Solar", group = 1)) +
+  geom_line(aes(y = Wind, color = "Wind", group = 1)) +
+  geom_line(aes(y = Hydropower, color = "Hydropower", group = 1)) +
+  geom_line(aes(y = Other.renewables, color = "Other Renewables", group = 1))+
+  labs(title = "Africa Historical Renewable Energy Consumption",
+       y = "Energy Consmumption (tera-watt hours)",
+       color = "Renewable Type")
 
 
 
